@@ -7,14 +7,36 @@ from django.urls import reverse
 class TestSmokes(TestCase):
     def setUp(self):
         self.client = Client()
+        self.u = User.objects.create_user(
+            username="test", email="test@mail.com", password="test"
+        )
+        self.u.save()
+
+    def test_user_detail(self):
+        resp = self.client.get(reverse("social:user_detail", kwargs={"pk": self.u.id}))
+        self.assertEqual(resp.status_code, 302)
+
+        resp = self.client.login(username="test", password="test")
+        self.assertTrue(resp)
+
+        resp = self.client.get(reverse("social:user_detail", kwargs={"pk": self.u.id}))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed("social/user_detail.html")
 
     def test_index(self):
         resp = self.client.get(reverse("social:index"))
         self.assertEqual(resp.status_code, 302)
 
+        resp = self.client.login(username="test", password="test")
+        self.assertTrue(resp)
+
+        resp = self.client.get(reverse("social:index"))
+        self.assertEqual(resp.status_code, 200)
+
     def test_register(self):
         resp = self.client.get(reverse("social:register"))
         self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed("social/register.html")
 
 
 class TestPersonalPage(TestCase):
