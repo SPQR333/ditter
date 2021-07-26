@@ -30,7 +30,7 @@ def register(request):
     return render(request, "social/register.html", {"form": f})
 
 
-class UserDetailView(DetailView, FormMixin, LoginRequiredMixin):
+class UserDetailView(LoginRequiredMixin, DetailView, FormMixin):
     template_name = "social/user_detail.html"
     model = User
     form_class = PostForm
@@ -42,7 +42,7 @@ class UserDetailView(DetailView, FormMixin, LoginRequiredMixin):
     def get_success_url(self):
         return reverse("social:user_detail", kwargs={"pk": self.object.id})
 
-    def post(self, request, *args, **kwargs):
+    def post(self):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():

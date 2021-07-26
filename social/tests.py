@@ -1,10 +1,7 @@
 from social.forms import PostForm
-from unittest.suite import TestSuite
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.messages import get_messages
 
 
 class TestSmokes(TestCase):
@@ -23,28 +20,33 @@ class TestSmokes(TestCase):
 class TestPersonalPage(TestCase):
     def setUp(self):
         self.client = Client()
-        u = User.objects.create_user(
+        self.u = User.objects.create_user(
             username="test", email="test@mail.com", password="test"
         )
-        u.save()
+        self.u.save()
 
     def test_personal_page(self):
-        resp = self.client.get(reverse("social:personal"))
-        self.assertEqual(resp.status_code, 401)
+        resp = self.client.get(reverse("social:user_detail", kwargs={"pk": self.u.id}))
+        self.assertEqual(resp.status_code, 302)
 
         resp = self.client.login(username="test", password="test")
         self.assertTrue(resp)
+
+        resp = self.client.get(reverse("social:user_detail", kwargs={"pk": self.u.id}))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, self.u.username)
 
 
 class TestPostForm(TestCase):
     def setUp(self):
         self.client = Client()
-        u = User.objects.create_user(
+        self.u = User.objects.create_user(
             username="test", email="test@mail.com", password="test"
         )
-        u.save()
+        self.u.save()
 
     def test_form(self):
-        form_data = {"author": "1", "title": "asdsadas", "content": "asdasdsad"}
+        form_data = {"author": self.u.id, "title": "asdsadas", "content": "asdasdsad"}
         form = PostForm(data=form_data)
+        print(form.errors)
         self.assertTrue(form.is_valid())
