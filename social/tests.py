@@ -8,3 +8,7 @@ class TestSmokes(TestCase):
 
     def test_index(self):
         self.client.get(reverse("social:index"))
+
+
+# class TestRegister(TestCase):
+#     def
