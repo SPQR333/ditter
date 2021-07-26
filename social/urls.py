@@ -5,4 +5,5 @@ app_name = "social"
 urlpatterns = [
     path("", views.index, name="index"),
     path("register/", views.register, name="register"),
+    path("user/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
 ]
