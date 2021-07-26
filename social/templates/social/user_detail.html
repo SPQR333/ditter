@@ -4,6 +4,10 @@
 
 {% block content %}
     <h1>{{user.username}}</h1>
+    <form action="{% url 'social:follow' user.id %}" method="post">
+        {% csrf_token %}
+        <button>Search</button>
+    </form>
     {% for post in user.post_set.all %}
         <h2>{{post.title}}<h2>
     {% endfor %}
@@ -17,4 +21,13 @@
             </tr>
         </table>
     </form>
+    
+
+    <script>
+        var button = document.querySelector('form[name="myform"] > button');
+            button.addEventListener(function() {
+            document.querySelector("form[name="myform"]").submit();
+        });
+    </script>
+
 {% endblock content %}
