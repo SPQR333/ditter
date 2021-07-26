@@ -54,7 +54,7 @@ def unfollow(request, pk):
 def follow(request, pk):
     if request.method == "POST":
         if request.user.id == pk:
-            messages.error(request, "You can`t unfollow yourself")
+            messages.error(request, "You can`t follow yourself")
             return redirect(reverse("social:user_detail", kwargs={"pk": pk}))
 
         follower = request.user
