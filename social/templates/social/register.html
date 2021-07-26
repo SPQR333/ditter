@@ -6,6 +6,8 @@
     <div class="login">
         <h1>Create account - The Great Django Blog</h1>
 
+        {% include "_message.html" %}
+
          <form method="post" >
              {% csrf_token %}
              <table>

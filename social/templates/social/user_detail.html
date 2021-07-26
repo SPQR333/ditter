@@ -5,13 +5,7 @@
 {% block content %}
     <h1>{{u.username}}</h1>
 
-    {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+    {% include "_message.html"%}
 
     {% if user.id != u.id %}
         {% if is_following %}
@@ -41,6 +35,4 @@
             </tr>
         </table>
     </form>
-    
-
 {% endblock content %}
