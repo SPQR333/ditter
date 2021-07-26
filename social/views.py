@@ -14,7 +14,7 @@ from .models import Followers
 
 @login_required
 def index(request):
-    return HttpResponse("Hello")
+    return HttpResponse(request.user.username)
 
 
 def register(request):
@@ -32,15 +32,38 @@ def register(request):
 
 
 @login_required
-def follow(request, pk):
+def unfollow(request, pk):
     if request.method == "POST":
         if request.user.id == pk:
+            messages.error(request, "You can`t unfollow yourself")
             return redirect(reverse("social:user_detail", kwargs={"pk": pk}))
 
         follower = request.user
         user = get_object_or_404(User, pk=pk)
-        f = Followers.objects.create(user=user, follower=follower)
-        f.save()
+        if Followers.objects.filter(user=user, follower=follower).exists():
+            Followers.objects.filter(user=user, follower=follower).delete()
+        else:
+            messages.error(request, "You can`t unfollow if you wasn`t followed")
+        return redirect(reverse("social:user_detail", kwargs={"pk": pk}))
+
+    else:
+        return redirect(reverse("social:user_detail", kwargs={"pk": pk}))
+
+
+@login_required
+def follow(request, pk):
+    if request.method == "POST":
+        if request.user.id == pk:
+            messages.error(request, "You can`t unfollow yourself")
+            return redirect(reverse("social:user_detail", kwargs={"pk": pk}))
+
+        follower = request.user
+        user = get_object_or_404(User, pk=pk)
+        if not Followers.objects.filter(user=user, follower=follower).exists():
+            f = Followers.objects.create(user=user, follower=follower)
+            f.save()
+        else:
+            messages.error(request, "You can`t follow twice")
         return redirect(reverse("social:user_detail", kwargs={"pk": pk}))
 
     else:
@@ -50,6 +73,7 @@ def follow(request, pk):
 class UserDetailView(LoginRequiredMixin, DetailView, FormMixin):
     template_name = "social/user_detail.html"
     model = User
+    context_object_name = "u"
     form_class = PostForm
 
     def get_initial(self):
@@ -58,6 +82,13 @@ class UserDetailView(LoginRequiredMixin, DetailView, FormMixin):
 
     def get_success_url(self):
         return reverse("social:user_detail", kwargs={"pk": self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_following"] = Followers.objects.filter(
+            user=self.get_object(), follower=self.request.user
+        ).exists()
+        return context
 
     def post(self):
         self.object = self.get_object()
