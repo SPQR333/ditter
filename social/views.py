@@ -117,7 +117,7 @@ class UserDetailView(LoginRequiredMixin, DetailView, FormMixin):
 
     def get_initial(self):
         obj = self.get_object()
-        return {"author": obj.id}
+        return {"author": obj.id, "parent": None}
 
     def get_success_url(self):
         return reverse("social:user_detail", kwargs={"pk": self.object.id})
@@ -129,7 +129,7 @@ class UserDetailView(LoginRequiredMixin, DetailView, FormMixin):
         ).exists()
         return context
 
-    def post(self):
+    def post(self, request, pk):
         self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():

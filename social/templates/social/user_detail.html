@@ -7,6 +7,7 @@
 
     {% include "_message.html"%}
 
+   
     {% if user.id != u.id %}
         {% if is_following %}
             <form action="{% url 'social:unfollow' u.id %}" method="post">
@@ -19,12 +20,7 @@
                 <button>Follow</button>
             </form>
         {%endif%}
-    {% endif %}
-
-    {% for post in u.post_set.all %}
-        <h2>{{post.title}}<h2>
-    {% endfor %}
-
+    {% else %}
     <form method="post" >
             {% csrf_token %}
             <table>
@@ -35,4 +31,10 @@
             </tr>
         </table>
     </form>
+    {% endif %}
+    {% for post in u.post_set.all %}
+        <h2><a href="{{post.get_absolute_url}}">{{post.text}}</a><h2>
+    {% endfor %}
+
+    
 {% endblock content %}
