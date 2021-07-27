@@ -15,6 +15,16 @@ from social.forms import PostForm
 from .models import Followers, Post
 
 
+class PostDetailView(LoginRequiredMixin, DetailView):
+    model = Post
+    template_name = "social/post_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["childrens"] = self.get_object().get_family()[1:]
+        return context
+
+
 def whoiam(request):
     return HttpResponse(request.user.username)
 

@@ -1,19 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.timezone import timezone
+from django.urls.base import reverse
+from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Post(models.Model):
+class Post(MPTTModel):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=128, blank=False, null=False)
-    content = models.TextField(max_length=1024, blank=False, null=False)
+    text = models.TextField(max_length=1024, blank=False, null=False)
     pub_date = models.DateField(auto_now=True)
+    parent = TreeForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+    )
+
+    def get_absolute_url(self):
+        return reverse("social:post_detail", kwargs={"pk": self.pk})
 
     def __str__(self) -> str:
-        return f"<{self.title} by {self.author.username}>"
+        return f"<{self.text} by {self.author.username}>"
 
-    class Meta:
-        unique_together = [("author", "title")]
+    class MPTTMeta:
+        order_insertion_by = ["pub_date"]
 
 
 class Followers(models.Model):

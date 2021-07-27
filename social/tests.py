@@ -169,7 +169,7 @@ class TestPostForm(TestCase):
         self.u.save()
 
     def test_form(self):
-        form_data = {"author": self.u.id, "title": "asdsadas", "content": "asdasdsad"}
+        form_data = {"author": self.u.id, "text": "asdasdsad"}
         form = PostForm(data=form_data)
         print(form.errors)
         self.assertTrue(form.is_valid())
