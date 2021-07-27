@@ -1,20 +1,33 @@
-from social.forms import PostForm
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Followers
+from django.views.generic.list import ListView
+
+from social.forms import PostForm
+
+from .models import Followers, Post
 
 
-@login_required
-def index(request):
+def whoiam(request):
     return HttpResponse(request.user.username)
+
+
+class IndexView(LoginRequiredMixin, ListView):
+    model = Post
+    template_name = "social/index.html"
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        following = [fol.user for fol in self.request.user.following.all()]
+        res = Post.objects.filter(author__in=following).order_by("-pub_date")
+        return list(res)
 
 
 def register(request):

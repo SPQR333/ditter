@@ -3,9 +3,10 @@ from . import views
 
 app_name = "social"
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.IndexView.as_view(), name="index"),
     path("register/", views.register, name="register"),
     path("user/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
     path("user/<int:pk>/follow", views.follow, name="follow"),
     path("user/<int:pk>/unfollow", views.unfollow, name="unfollow"),
+    path("whoiam/", views.whoiam),
 ]

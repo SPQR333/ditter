@@ -7,7 +7,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=128, blank=False, null=False)
     content = models.TextField(max_length=1024, blank=False, null=False)
-    pub_data = models.DateField(auto_now=True)
+    pub_date = models.DateField(auto_now=True)
 
     def __str__(self) -> str:
         return f"<{self.title} by {self.author.username}>"
