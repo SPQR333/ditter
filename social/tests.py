@@ -143,31 +143,21 @@ class TestUnfollow(TestCase):
         resp = self.u1.following.all()
         self.assertEqual(len(resp), 0)
 
-    # def test_follow_to_self(self):
-    #     resp = self.client.login(username="test1", password="test1")
-    #     self.assertTrue(resp)
+    def test_unfollow_to_non_existent_user(self):
+        resp = self.client.login(username="test1", password="test1")
+        self.assertTrue(resp)
 
-    #     resp = self.client.post(reverse("social:follow", kwargs={"pk": self.u1.id}))
-    #     self.assertEqual(resp.status_code, 302)
+        resp = self.client.post(reverse("social:unfollow", kwargs={"pk": 155}))
+        self.assertEqual(resp.status_code, 404)
 
-    #     resp = self.u1.following.all()
-    #     self.assertEqual(len(resp), 0)
+    def test_unfollow_get_request(self):
+        resp = self.client.login(username="test1", password="test1")
+        self.assertTrue(resp)
 
-    # def test_follow_to_non_existent_user(self):
-    #     resp = self.client.login(username="test1", password="test1")
-    #     self.assertTrue(resp)
-
-    #     resp = self.client.post(reverse("social:follow", kwargs={"pk": 155}))
-    #     self.assertEqual(resp.status_code, 404)
-
-    # def test_follow_get_request(self):
-    #     resp = self.client.login(username="test1", password="test1")
-    #     self.assertTrue(resp)
-
-    #     resp = self.client.get(reverse("social:follow", kwargs={"pk": self.u1.id}))
-    #     self.assertRedirects(
-    #         resp, reverse("social:user_detail", kwargs={"pk": self.u1.id})
-    #     )
+        resp = self.client.get(reverse("social:unfollow", kwargs={"pk": self.u1.id}))
+        self.assertRedirects(
+            resp, reverse("social:user_detail", kwargs={"pk": self.u1.id})
+        )
 
 
 class TestPostForm(TestCase):
