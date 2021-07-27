@@ -15,14 +15,30 @@ from social.forms import PostForm
 from .models import Followers, Post
 
 
-class PostDetailView(LoginRequiredMixin, DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView, FormMixin):
     model = Post
     template_name = "social/post_detail.html"
+    form_class = PostForm
+
+    def get_initial(self):
+        return {"author": self.request.user.id, "parent": self.get_object()}
+
+    def get_success_url(self):
+        return reverse("social:post_detail", kwargs={"pk": self.object.id})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["childrens"] = self.get_object().get_descendants()
         return context
+
+    def post(self, request, pk):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            form.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 def whoiam(request):
