@@ -4,7 +4,7 @@
 <ul>
     {% recursetree childrens %}
         <li>
-            {{ node.text }}
+            <a href="{{node.get_absolute_url}}">{{ node.text }}</a>
             {% if not node.is_leaf_node %}
                 <ul class="children">
                     {{ children }}

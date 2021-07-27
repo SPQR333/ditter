@@ -21,7 +21,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["childrens"] = self.get_object().get_family()[1:]
+        context["childrens"] = self.get_object().get_descendants()
         return context
 
 
