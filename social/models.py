@@ -10,6 +10,14 @@ class Avatar(models.Model):
         upload_to="avatars/",
     )
 
+    def update(self, *args, **kwargs):
+        self.picture.storage.delete(self.picture.path)
+        return super().update(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.picture.storage.delete(self.picture.path)
+        return super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"<{self.user.username}`s avatar>"
 
