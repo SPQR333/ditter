@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-y!fd_232_)su8(#+rb4vfy30e399^673!h@(uuo#k!6r)bbx+m"
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,10 +82,10 @@ WSGI_APPLICATION = "ditter.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "ditter",
-        "USER": "django",
-        "PASSWORD": "pthj[jeh007",
-        "HOST": "localhost",
+        "NAME": os.environ["DJANGO_DB_NAME"],
+        "USER": os.environ["DJANGO_DB_USER"],
+        "PASSWORD": os.environ["DJANGO_DB_PASSWORD"],
+        "HOST": os.environ["DJANGO_DB_HOST"],
     }
 }
 
