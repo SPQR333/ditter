@@ -1,7 +1,13 @@
 from django import forms
-from django.forms import widgets
+from django.forms import fields, widgets
 
-from .models import Post
+from .models import Avatar, Post
+
+
+class AvatarForm(forms.ModelForm):
+    class Meta:
+        model = Avatar
+        fields = ("picture",)
 
 
 class PostForm(forms.ModelForm):

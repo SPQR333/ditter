@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
+{% load static %}
 {% block title %}{{ u.username }}{% endblock title %}
 
 {% block content %}
     <h1>{{u.username}}</h1>
+    {% if u.avatar.picture  %}
+        <img src="{{ u.avatar.picture.url }}" height="200" width="200">
+    {% else %}
+        <a href="{% url 'social:upload_avatar' %}"><img src="{% static "social/img/camera_200.png" %}" height="200" width="200"></a>
+    {% endif %}
 
     {% include "_message.html"%}
 

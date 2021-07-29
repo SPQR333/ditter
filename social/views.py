@@ -9,10 +9,29 @@ from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ListView
+from django.conf import settings
+from social.forms import PostForm, AvatarForm
 
-from social.forms import PostForm
+from .models import Avatar, Followers, Post
 
-from .models import Followers, Post
+
+@login_required
+def image_upload_view(request):
+    if request.method == "POST":
+        form = AvatarForm(
+            request.POST, request.FILES, initial={"user": request.user.id}
+        )
+        if form.is_valid():
+            user = request.user
+            picture = form.cleaned_data["picture"]
+
+            Avatar.objects.update_or_create(user=user, defaults={"picture": picture})
+            return redirect(
+                reverse("social:user_detail", kwargs={"pk": request.user.id})
+            )
+    else:
+        form = AvatarForm(initial={"user": request.user.id})
+    return render(request, "social/image.html", {"form": form})
 
 
 class PostDetailView(LoginRequiredMixin, DetailView, FormMixin):

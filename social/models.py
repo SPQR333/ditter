@@ -4,6 +4,16 @@ from django.urls.base import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 
 
+class Avatar(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    picture = models.ImageField(
+        upload_to="avatars/",
+    )
+
+    def __str__(self):
+        return f"<{self.user.username}`s avatar>"
+
+
 class Post(MPTTModel):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField(max_length=1024, blank=False, null=False)
