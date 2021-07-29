@@ -1,8 +1,17 @@
+{% load static %}
 <!DOCTYPE html>
 <head>
     <meta charset="uft-8">
+    <link rel="stylesheet" type="text/css" href="{% static "social/style.css" %}" >
     <title>{%block title%}Ditter{% endblock %}</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
+        <ul class="nav-bar">
+            <li class="nav-bar-element"><a href="{% url 'social:user_detail' user.id %}">Home</a></li>
+            <li class="nav-bar-element"><a href="{% url "social:index" %}">News</a></li>
+            <li class="nav-bar-element"><a href="{% url 'logout' %}">Logout</a></li>
+        </ul> 
+    {% endif %}
     {% block content %} {% endblock %}
 </body>
